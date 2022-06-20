@@ -3,6 +3,7 @@
 class Omoney {
 
 	private static $initiated = false;
+	public static $table_omney_transaction = 'omoney_transaction';
 
 	public static function init() {
 		if (!self::$initiated) {
@@ -10,15 +11,17 @@ class Omoney {
 		}
 	}
 
-	private static function init_hooks() {
+	public static function init_hooks() {
 		self::$initiated = true;
+		/* add_action( 'plugins_loaded', array(__CLASS__,'init_woocommerce_instance_class'));
+		add_filter( 'woocommerce_payment_gateways', array(__CLASS__,'init_woocommerce_gateway_class' )); */
 	}
 
 	public static function init_database_table(){
 		
 		global $wpdb;
 
-		$table_name      = $wpdb->prefix . 'omoney_transaction';
+		$table_name      = $wpdb->prefix . self::$table_omney_transaction;
 		$charset_collate = $wpdb->get_charset_collate();
 
 		$sql = "CREATE TABLE IF NOT EXISTS $table_name (
@@ -35,6 +38,22 @@ class Omoney {
 		$wpdb->query($sql);
 
 
+	}
+
+	public function init_woocommerce_gateway_class($gateways) {
+		$gateways[] = 'WC_OMoney_Gateway';
+		return $gateways;
+	}
+
+	public function init_woocommerce_instance_class(){
+
+		static $instance = null;
+ 
+        if ( is_null( $instance ) ) {
+            $instance = new WC_OMoney_Gateway();
+        }
+         
+        return $instance;
 	}
 	
 	public static function plugin_activation() {

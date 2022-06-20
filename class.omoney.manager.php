@@ -35,7 +35,7 @@
 			*	@param string $om_prefix : The prefix to add to the transaction id.
 		*/
 
-		public function __construct($om_environnement = 0, $om_reference, $om_merchant, $om_secret, $om_prefix = "OM"){
+		public function __construct($om_environnement = 1, $om_reference, $om_merchant, $om_secret, $om_prefix = "OM"){
 
 			$this->init();
 
@@ -45,7 +45,7 @@
 			$this->om_secret = $om_secret;
 			$this->om_prefix = substr(strtoupper($om_prefix),0,5);
 
-			if ($this->om_environnement == 0) {
+			if ($this->om_environnement == 1) {
 				$this->om_currency = "OUV" ;
 			}else{
 				$this->om_currency = "XOF" ;
