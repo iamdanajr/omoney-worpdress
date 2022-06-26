@@ -17,9 +17,16 @@ class OmoneyAdmin {
 	}
 
 	public static function init_hooks() {
+		
 		self::$initiated = true;
 		add_action( 'admin_init', array( 'OmoneyAdmin', 'admin_init' ) );
 		add_action( 'admin_menu', array( 'OmoneyAdmin', 'admin_menu' ), 5 );
+
+		wp_register_style( 'assets/css/bootstrap.min.css', plugin_dir_url( __FILE__ ) . 'assets/css/bootstrap.min.css' );
+		wp_enqueue_style( 'assets/css/bootstrap.min.css');
+
+		wp_register_script( 'assets/js/bootstrap.min.js', plugin_dir_url( __FILE__ ) . 'assets/js/bootstrap.min.js');
+		wp_enqueue_script( 'assets/js/bootstrap.min.js' );
 	}
 
 	public static function admin_init() {
@@ -59,6 +66,8 @@ class OmoneyAdmin {
 		foreach( array( 'omoney_reference', 'omoney_prefix', 'omoney_merchant', 'omoney_secret', 'omoney_environnemnt' ) as $option ) {
 			update_option( $option, isset( $_POST[$option] ) ? sanitize_text_field($_POST[$option]) : '' );
 		}
+
+		$_SESSION['omoney-config'] = true;
 
 		return true;
 	}
@@ -126,6 +135,10 @@ class OmoneyAdmin {
 
 		$url = add_query_arg( $args, admin_url( 'options-general.php' ) );
 		return $url;
+	}
+
+	public static function get_logo() {
+		return plugins_url('assets/img/logo.png',__FILE__);
 	}
 
 	public static function get_omoney_manager(){
